@@ -11,10 +11,15 @@ class Game
 private:
 	//window
 	sf::RenderWindow* window;
-
+	
 	//resources
 	//using map: which is structure thingy that maps two things
 	std::map<std::string, sf::Texture*> textures;
+
+	//main player
+	Ship* ship;
+	
+	//bullet objects
 	std::vector<Bullets*> bulletNum;
 
 	//background stuff
@@ -25,14 +30,15 @@ private:
 	sf::Font font;
 	sf::Text pointsText;
 
-	sf::Text welcomeText;
-	sf::Text gameOverText;
-
 	sf::RectangleShape playerHpBar;
 	sf::RectangleShape playerHpBarBG;
 
+	sf::RectangleShape shield;
+
 	//Tutorial/ Welcome
 	bool welcome;
+	sf::Text welcomeText;
+	sf::Text gameOverText;
 
 	//points system
 	float points;
@@ -40,9 +46,6 @@ private:
 	//difficulty scaling
 	float spawnRate;
 	float spawnRateCounter;
-
-	//main player
-	Ship* ship;
 
 	//Enemies
 	float spawnTimer;
@@ -75,6 +78,7 @@ public:
 	void updateCombat();
 	void update();
 
+	void renderWelcomeScreen();
 	void renderHUD();
 	void renderBackground();
 	void render();

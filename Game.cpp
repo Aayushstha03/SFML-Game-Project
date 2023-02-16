@@ -47,8 +47,8 @@ void Game::initHUD()
 	this->gameOverText.setFillColor(sf::Color::White);
 	this->gameOverText.setString("Game Over");
 	this->gameOverText.setPosition
-		(this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
-			this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f);
+	(this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
+		this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f);
 
 
 	//initializing Player HP data
@@ -56,8 +56,15 @@ void Game::initHUD()
 	this->playerHpBar.setFillColor(sf::Color::Green);
 	this->playerHpBar.setPosition(sf::Vector2f(50.f, this->window->getSize().y - 50.f));
 
+	//copy attributes from HpBar!
 	this->playerHpBarBG = this->playerHpBar;
 	this->playerHpBarBG.setFillColor(sf::Color::Red);
+
+	//initializing the "planet surface" lol
+	this->shield.setSize(sf::Vector2f(this->window->getSize().x, 40));
+	this->shield.setFillColor(sf::Color::Green);
+	this->shield.setPosition(sf::Vector2f(0.f, this->window->getSize().y - 20.f));
+
 }
 
 void Game::initPlayer()
@@ -124,7 +131,7 @@ Game::~Game()
 
 }
 
-//functions of the game
+//Main Game Loop!!!!
 void Game::run()
 {
 	while (this->window->isOpen())
@@ -132,10 +139,11 @@ void Game::run()
 		//basic window controls
 		this->updatePollEvents();
 
-		//only update if the player is alive!
+		//update the game only if the player is alive!
 		if (this->ship->getHp() > 0)
 			this->update();
 
+		//render function
 		this->render();
 	}
 }
@@ -347,12 +355,17 @@ void Game::renderHUD()
 	this->window->draw(this->pointsText);
 	this->window->draw(this->playerHpBarBG);
 	this->window->draw(this->playerHpBar);
-
+	this->window->draw(this->shield);
 }
 
 void Game::renderBackground()
 {
 	this->window->draw(this->worldBackground);
+}
+
+void Game::renderWelcomeScreen()
+{
+	this->window->draw(this->welcomeText);
 }
 
 void Game::render()
@@ -362,6 +375,11 @@ void Game::render()
 
 	this->renderBackground();
 
+//	if((!sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) && this->welcome == true)
+//	{
+//		this->renderWelcomeScreen();
+//	}
+	
 	//add objects
 	this->ship->render(*this->window);
 	

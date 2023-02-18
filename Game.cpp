@@ -83,6 +83,7 @@ void Game::initEnemies()
 
 void Game::initSystem()
 {
+	this->pause = false;
 	this->points = 0;
 }
 
@@ -140,7 +141,7 @@ void Game::run()
 		this->updatePollEvents();
 
 		//update the game only if the player is alive!
-		if (this->ship->getHp() > 0)
+		if (this->ship->getHp() > 0 /* && !this->pause*/)
 			this->update();
 
 		//render function
@@ -151,6 +152,7 @@ void Game::run()
 void Game::updatePollEvents()
 {
 	sf::Event ev;
+	int pauseCounter;
 
 	while (this->window->pollEvent(ev))
 	{
@@ -173,6 +175,7 @@ void Game::updateInputs()
 		this->ship->Move(-1.f, 0.f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		this->ship->Move(1.f, 0.f);
+	
 
 	//shooting
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&this->ship->canAttack())
@@ -298,6 +301,8 @@ void Game::updateHUD()
 	float hpPercent = static_cast<float>(this->ship->getHp()) / this->ship->getHpMax();
 	//original size * current hpPercent to generate the length!
 	this->playerHpBar.setSize(sf::Vector2f(400.f * hpPercent, this->playerHpBar.getSize().y));
+
+
 	 
 }
 
@@ -402,7 +407,6 @@ void Game::render()
 	if (this->ship->getHp() == 0)
 	{
 		this->window->draw(this->gameOverText);
-		this->window->draw(this->welcomeText);
 	}
 
 	//push the new frame

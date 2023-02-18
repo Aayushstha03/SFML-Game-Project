@@ -13,6 +13,10 @@ private:
 	sf::RenderWindow* window;
 	
 	//resources
+	
+	//pause game?
+	bool pause;
+	
 	//using map: which is structure thingy that maps two things
 	std::map<std::string, sf::Texture*> textures;
 

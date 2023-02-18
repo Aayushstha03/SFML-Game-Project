@@ -52,18 +52,19 @@ void Game::initHUD()
 
 
 	//initializing Player HP data
-	this->playerHpBar.setSize(sf::Vector2f(400.f, 20.f));
+	this->playerHpBar.setSize(sf::Vector2f(120.f, 15.f));
 	this->playerHpBar.setFillColor(sf::Color::Green);
-	this->playerHpBar.setPosition(sf::Vector2f(50.f, this->window->getSize().y - 50.f));
+	this->playerHpBar.setPosition(this->ship->getPos().x - this->playerHpBar.getSize().x / 2
+		, this->ship->getPos().y + 155.f);
 
 	//copy attributes from HpBar!
 	this->playerHpBarBG = this->playerHpBar;
 	this->playerHpBarBG.setFillColor(sf::Color::Red);
 
 	//initializing the "planet surface" lol
-	this->shield.setSize(sf::Vector2f(this->window->getSize().x, 40));
-	this->shield.setFillColor(sf::Color::Green);
-	this->shield.setPosition(sf::Vector2f(0.f, this->window->getSize().y - 20.f));
+	this->shield.setSize(sf::Vector2f(this->window->getSize().x, 60));
+	this->shield.setFillColor(sf::Color::Magenta);
+	this->shield.setPosition(sf::Vector2f(0.f, this->window->getSize().y - 60.f));
 
 }
 
@@ -141,7 +142,7 @@ void Game::run()
 		this->updatePollEvents();
 
 		//update the game only if the player is alive!
-		if (this->ship->getHp() > 0 /* && !this->pause*/)
+		if (this->ship->getHp() > 0 && this->sh.getHp() > 0/* && !this->pause*/)
 			this->update();
 
 		//render function
@@ -183,9 +184,10 @@ void Game::updateInputs()
 		this->bulletNum.push_back(new Bullets(this->textures["BULLET"], this->ship->getPos().x + this->ship->getBounds().width / 2.4f, this->ship->getPos().y - 20.f, 0.f, -1.f, 20.f));
 	}
 
+	//Movement handicap!
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		this->ship->setMoveSpeed(5.f);
+		this->ship->setMoveSpeed(3.f);
 	}
 	else
 		this->ship->setMoveSpeed(15.f);
@@ -230,14 +232,15 @@ void Game::updateEnemies()
 		enemy->update();
 
 		//removing if its at bottom of the screen
-		if (enemy->getBounds().top > window->getSize().y)
+		if (enemy->getBounds().top > window->getSize().y - 60.f)
 		{
 			//damage the planet/mothership whatever
+			this->sh.loseHP(this->enemyNum.at(counter)->getDamage());
 			delete this->enemyNum.at(counter);
 			this->enemyNum.erase(this->enemyNum.begin() + counter);
 			--counter;
 		}
-		//removing the enemy if it touches the player
+		//removing the enemy and damage dealt if contact!
 		else if (enemy->getBounds().intersects(this->ship->getBounds()))
 		{
 			this->ship->loseHp(this->enemyNum.at(counter)->getDamage());
@@ -257,6 +260,7 @@ void Game::updateCombat()
 		bool enemy_deleted = false;
 		for (int k = 0; k < this->bulletNum.size() && !enemy_deleted; k++)
 		{
+			//Bullet and Enemy collision!
 			if (this->bulletNum[k]->getBounds().intersects(this->enemyNum[i]->getBounds()))
 			{
 				this->enemyNum[i]->loseHP(1);
@@ -300,10 +304,26 @@ void Game::updateHUD()
 	//updating player HP bar and such
 	float hpPercent = static_cast<float>(this->ship->getHp()) / this->ship->getHpMax();
 	//original size * current hpPercent to generate the length!
-	this->playerHpBar.setSize(sf::Vector2f(400.f * hpPercent, this->playerHpBar.getSize().y));
+	this->playerHpBar.setSize(sf::Vector2f(120.f * hpPercent, this->playerHpBar.getSize().y));
 
+	this->playerHpBar.setPosition(this->ship->getPos().x
+		, this->ship->getPos().y + 155.f);
+	this->playerHpBarBG.setPosition(this->ship->getPos().x
+		, this->ship->getPos().y + 155.f);
 
-	 
+	//for the planet/shield
+	//generating fraction of current HP/ Total HP
+	float shieldhP = static_cast<float>(this->sh.getHp() / this->sh.getHpMax());
+	//changing color in accordance to HP percentage
+	if (shieldhP > 0.75)
+		this->shield.setFillColor(sf::Color::Magenta);
+	else if (shieldhP > 50.f)
+		this->shield.setFillColor(sf::Color::Cyan);
+	else if (shieldhP > 0.25f)
+		this->shield.setFillColor(sf::Color::Yellow);
+	else if (shieldhP > 0.f)
+		this->shield.setFillColor(sf::Color::Red);
+		 
 }
 
 void Game::updateWorld()
@@ -312,11 +332,14 @@ void Game::updateWorld()
 
 void Game::updateCollisions()
 {
+	//left&right or Top&bottom can't happen simultaneously so if and else if!
+
 	//checking collion in left and right
 	if (this->ship->getBounds().left < 0.f)
 	{
 		this->ship->setPosition(0.f, this->ship->getBounds().top);
 	}
+	//right
 	else if (this->ship->getBounds().left + this->ship->getBounds().width  >= this->window->getSize().x)
 	{
 		this->ship->setPosition(this->window->getSize().x - this->ship->getBounds().width, this->ship->getBounds().top);
@@ -328,9 +351,10 @@ void Game::updateCollisions()
 		this->ship->setPosition(this->ship->getBounds().left, 0.f);
 	}
 
-	if (this->ship->getBounds().top + this->ship->getBounds().height >= this->window->getSize().y)
+	//bottom
+	else if (this->ship->getBounds().top + this->ship->getBounds().height >= this->window->getSize().y - 70.f)
 	{
-		this->ship->setPosition(this->ship->getBounds().left, this->window->getSize().y - this->ship->getBounds().height);
+		this->ship->setPosition(this->ship->getBounds().left, this->window->getSize().y - this->ship->getBounds().height - 70.f);
 	}
 
 }
@@ -404,7 +428,7 @@ void Game::render()
 	this->renderHUD();
 
 	//Rendering Game Over Screen
-	if (this->ship->getHp() == 0)
+	if (this->ship->getHp() == 0 || this->sh.getHp() == 0)
 	{
 		this->window->draw(this->gameOverText);
 	}

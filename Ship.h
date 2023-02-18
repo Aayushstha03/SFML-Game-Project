@@ -45,10 +45,8 @@ public:
 	void setHP(const int hp);
 	void loseHp(const int value);
 
-
 	void updateCooldown();
 	const bool canAttack();
-
 
 	void update();
 	void render(sf::RenderTarget& target);

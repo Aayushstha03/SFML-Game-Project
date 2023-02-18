@@ -3,6 +3,7 @@
 #include "Ship.h"
 #include "Bullets.h"
 #include "Enemy.h"
+#include "Shield.h"
 #include<string>
 #include<sstream>
 
@@ -37,6 +38,8 @@ private:
 	sf::RectangleShape playerHpBar;
 	sf::RectangleShape playerHpBarBG;
 
+	//object for shield
+	Shield sh;
 	sf::RectangleShape shield;
 
 	//Tutorial/ Welcome

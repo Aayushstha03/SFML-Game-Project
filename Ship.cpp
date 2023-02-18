@@ -95,7 +95,7 @@ void Ship::loseHp(const int value)
 void Ship::updateCooldown()
 {
 	if (this->attackCoolDown < this->attackCoolDownMax)
-		this->attackCoolDown += 1.f;
+		this->attackCoolDown += 1.55f;
 }
 
 const bool Ship::canAttack()

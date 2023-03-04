@@ -29,6 +29,8 @@ public:
 	const int& getHp() const;
 	void loseHP(const int value);
 
+	void setColor();
+
 	//Functions
 	void update();
 	void render(sf::RenderTarget* target);

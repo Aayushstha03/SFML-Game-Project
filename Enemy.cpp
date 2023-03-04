@@ -14,10 +14,15 @@ void Enemy::initVariables()
 
 void Enemy::initShape()
 {
+	//this function generates the shape/sprite of the enemy!
 	this->shape.setRadius(this->pointCount*6);
 	this->shape.setPointCount(this->pointCount);
+	
+	//seperate function to assign color as this is going to be dynamic!
 	//HSL hue saturation and lightness color format!
-	this->shape.setFillColor(sf::Color(rand() % 255 + 1, rand() % 255 + 1, 255));
+	this->shape.setFillColor(sf::Color(255, 38, 59));
+	this->shape.setOutlineColor(sf::Color());
+	this->shape.setOutlineThickness(5.f);
 }
 
 Enemy::Enemy()
@@ -26,8 +31,9 @@ Enemy::Enemy()
 
 Enemy::Enemy(float posX, float posY)
 {
+	//intializing the enemies variabels
 	this->initVariables();
-	//called after initializing the pointCounts and stuff
+	//called after initializing the Enemy's shape,damage and color
 	this->initShape();
 
 	this->shape.setPosition(posX, posY);
@@ -65,6 +71,16 @@ void Enemy::loseHP(const int value)
 	if (this->hp < 0)
 		this->hp = 0;
 
+}
+
+void Enemy::setColor()
+{
+	if (this->hp/this->hpMax > 0.66f)
+		this->shape.setFillColor(sf::Color(255, 38, 59));
+	else if(this->hpMax - this->hp > 0.33f)
+		this->shape.setFillColor(sf::Color(255, 117, 59));
+	else if(this->hpMax - this->hp > 0)
+		this->shape.setFillColor(sf::Color(255, 179, 59));
 }
 
 void Enemy::update()

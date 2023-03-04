@@ -2,11 +2,11 @@
 
 void Game::initializeWindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Planet Defence" ,sf::Style::Fullscreen);
+	this->window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Planet Defence", sf::Style::Fullscreen);
 	this->window->setFramerateLimit(61);
 	this->window->setVerticalSyncEnabled(true);
 
-	this->worldBackgroundtexture.loadFromFile("Textures/background.jpg");
+	this->worldBackgroundtexture.loadFromFile("Textures/background.png");
 	this->worldBackground.setTexture(this->worldBackgroundtexture);
 
 }
@@ -61,10 +61,10 @@ void Game::initHUD()
 	this->playerHpBarBG = this->playerHpBar;
 	this->playerHpBarBG.setFillColor(sf::Color::Red);
 
-	//initializing the "planet surface" lol
+	//initializing the "planet surface"
 	this->shield.setSize(sf::Vector2f(this->window->getSize().x, 60));
 	this->shield.setFillColor(sf::Color::Magenta);
-	this->shield.setPosition(sf::Vector2f(0.f, this->window->getSize().y - 60.f));
+	this->shield.setPosition(sf::Vector2f(0.f, this->window->getSize().y - 30.f));
 
 }
 
@@ -264,6 +264,10 @@ void Game::updateCombat()
 			if (this->bulletNum[k]->getBounds().intersects(this->enemyNum[i]->getBounds()))
 			{
 				this->enemyNum[i]->loseHP(1);
+				this->enemyNum[i]->setColor();
+				//reassign color after enemy takes damage!
+				//need a set color func then
+
 
 				if (this->enemyNum[i]->getHp() == 0)
 				{
@@ -302,10 +306,13 @@ void Game::updateHUD()
 	this->pointsText.setString(ss.str());
 
 	//updating player HP bar and such
+
+	//calculating HP percentage
 	float hpPercent = static_cast<float>(this->ship->getHp()) / this->ship->getHpMax();
 	//original size * current hpPercent to generate the length!
 	this->playerHpBar.setSize(sf::Vector2f(120.f * hpPercent, this->playerHpBar.getSize().y));
 
+	//moving the hp bar to new position relative to the ship
 	this->playerHpBar.setPosition(this->ship->getPos().x
 		, this->ship->getPos().y + 155.f);
 	this->playerHpBarBG.setPosition(this->ship->getPos().x
@@ -313,17 +320,17 @@ void Game::updateHUD()
 
 	//for the planet/shield
 	//generating fraction of current HP/ Total HP
-	float shieldhP = static_cast<float>(this->sh.getHp() / this->sh.getHpMax());
+	float shieldHpPercent = static_cast<float>(this->sh.getHp() / this->sh.getHpMax());
+	std::cout << shieldHpPercent<<"\t";
 	//changing color in accordance to HP percentage
-	if (shieldhP > 0.75)
-		this->shield.setFillColor(sf::Color::Magenta);
-	else if (shieldhP > 50.f)
-		this->shield.setFillColor(sf::Color::Cyan);
-	else if (shieldhP > 0.25f)
-		this->shield.setFillColor(sf::Color::Yellow);
-	else if (shieldhP > 0.f)
-		this->shield.setFillColor(sf::Color::Red);
-		 
+	if (shieldHpPercent > 0.75f || shieldHpPercent == 1)
+		this->shield.setFillColor(sf::Color(105, 0, 248));
+	if (shieldHpPercent < 0.75f && shieldHpPercent >= 50.f)
+		this->shield.setFillColor(sf::Color(105, 0, 180));
+	if (shieldHpPercent < 50.f && shieldHpPercent >= 0.25f)
+		this->shield.setFillColor(sf::Color(105, 0, 102));
+	if (shieldHpPercent < 0.25f && shieldHpPercent >= 0.f)
+		this->shield.setFillColor(sf::Color(105, 0, 66));
 }
 
 void Game::updateWorld()
@@ -352,9 +359,9 @@ void Game::updateCollisions()
 	}
 
 	//bottom
-	else if (this->ship->getBounds().top + this->ship->getBounds().height >= this->window->getSize().y - 70.f)
+	else if (this->ship->getBounds().top + this->ship->getBounds().height >= this->window->getSize().y - 40.f)
 	{
-		this->ship->setPosition(this->ship->getBounds().left, this->window->getSize().y - this->ship->getBounds().height - 70.f);
+		this->ship->setPosition(this->ship->getBounds().left, this->window->getSize().y - this->ship->getBounds().height - 40.f);
 	}
 
 }

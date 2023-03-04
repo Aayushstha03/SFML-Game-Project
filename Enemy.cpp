@@ -59,7 +59,7 @@ const int& Enemy::getDamage() const
 	return this->damage;
 }
 
-const int& Enemy::getHp() const
+const float& Enemy::getHp() const
 {
 	return this->hp;
 }
@@ -75,12 +75,16 @@ void Enemy::loseHP(const int value)
 
 void Enemy::setColor()
 {
-	if (this->hp/this->hpMax > 0.66f)
+	this->hpPercent = static_cast<float>((this->hp / this->hpMax) * 100);
+	//std::cout << this->hpPercent;
+
+	if (this->hpPercent > 75.f)
 		this->shape.setFillColor(sf::Color(255, 38, 59));
-	else if(this->hpMax - this->hp > 0.33f)
+	else if (this->hpPercent > 50.f)
 		this->shape.setFillColor(sf::Color(255, 117, 59));
-	else if(this->hpMax - this->hp > 0)
+	else if (this->hpPercent > 25.f)
 		this->shape.setFillColor(sf::Color(255, 179, 59));
+
 }
 
 void Enemy::update()

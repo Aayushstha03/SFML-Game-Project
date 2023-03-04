@@ -7,9 +7,11 @@ class Enemy
 private:
 	float pointCount;
 	sf::CircleShape shape;
-	int hp, hpMax, damage, points;
+	float hp;
+	float hpMax;
+	int damage, points;
 	int type;
-	float speed;
+	float speed,hpPercent;
 
 	void initVariables();
 	void initShape();
@@ -26,7 +28,7 @@ public:
 	const int& getPoints() const;
 	const int& getDamage() const;
 	
-	const int& getHp() const;
+	const float& getHp() const;
 	void loseHP(const int value);
 
 	void setColor();

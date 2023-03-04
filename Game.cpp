@@ -153,7 +153,6 @@ void Game::run()
 void Game::updatePollEvents()
 {
 	sf::Event ev;
-	int pauseCounter;
 
 	while (this->window->pollEvent(ev))
 	{
@@ -308,7 +307,7 @@ void Game::updateHUD()
 	//updating player HP bar and such
 
 	//calculating HP percentage
-	float hpPercent = static_cast<float>(this->ship->getHp()) / this->ship->getHpMax();
+	hpPercent = static_cast<float>(this->ship->getHp()) / this->ship->getHpMax();
 	//original size * current hpPercent to generate the length!
 	this->playerHpBar.setSize(sf::Vector2f(120.f * hpPercent, this->playerHpBar.getSize().y));
 
@@ -320,16 +319,16 @@ void Game::updateHUD()
 
 	//for the planet/shield
 	//generating fraction of current HP/ Total HP
-	float shieldHpPercent = static_cast<float>(this->sh.getHp() / this->sh.getHpMax());
-	std::cout << shieldHpPercent<<"\t";
+	shieldHpPercent = (this->sh.getHp() / this->sh.getHpMax()) * 100;
+	//std::cout << shieldHpPercent<<"\t";
 	//changing color in accordance to HP percentage
-	if (shieldHpPercent > 0.75f || shieldHpPercent == 1)
+	if (shieldHpPercent > 75.f || shieldHpPercent == 1)
 		this->shield.setFillColor(sf::Color(105, 0, 248));
-	if (shieldHpPercent < 0.75f && shieldHpPercent >= 50.f)
+	else if (shieldHpPercent >= 50.f)
 		this->shield.setFillColor(sf::Color(105, 0, 180));
-	if (shieldHpPercent < 50.f && shieldHpPercent >= 0.25f)
+	else if (shieldHpPercent >= 25.f)
 		this->shield.setFillColor(sf::Color(105, 0, 102));
-	if (shieldHpPercent < 0.25f && shieldHpPercent >= 0.f)
+	else if (shieldHpPercent >= 0.f)
 		this->shield.setFillColor(sf::Color(105, 0, 66));
 }
 

@@ -23,7 +23,8 @@ private:
 
 	//main player
 	Ship* ship;
-	
+	float hpPercent;
+
 	//bullet objects
 	std::vector<Bullets*> bulletNum;
 
@@ -41,6 +42,7 @@ private:
 	//object for shield
 	Shield sh;
 	sf::RectangleShape shield;
+	float shieldHpPercent;
 
 	//Tutorial/ Welcome
 	bool welcome;

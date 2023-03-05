@@ -64,7 +64,11 @@ private:
 	//private methods
 	void initializeWindow();
 	void initTextures();
+	
+	//welcome screen init
 	void initWelcomeScreen();
+
+	//elements of the game
 	void initPlayer();
 	void initEnemies();
 	void initHUD();
@@ -87,7 +91,10 @@ public:
 	void updateCombat();
 	void update();
 
+	//welcome screen render!
 	void renderWelcomeScreen();
+
+	//game elements render
 	void renderHUD();
 	void renderBackground();
 	void render();

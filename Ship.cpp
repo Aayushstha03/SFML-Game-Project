@@ -42,7 +42,7 @@ const int& Ship::getHpMax() const
 void Ship::initTexture()
 {
 	//load texture from file
-	if (!this->texture.loadFromFile("Textures/Ship2.png"))
+	if (!this->texture.loadFromFile("Textures/Ship.png"))
 		std::cout << "ERROR:SHIP CLASS:Texture not found!"<<std::endl;
 }
 

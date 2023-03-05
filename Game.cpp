@@ -88,7 +88,7 @@ void Game::initSystem()
 	this->points = 0;
 }
 
-Game::Game()
+Game::Game()//constructor
 {
 	//load window
 	this->initializeWindow();
@@ -142,11 +142,19 @@ void Game::run()
 		this->updatePollEvents();
 
 		//update the game only if the player is alive!
-		if (this->ship->getHp() > 0 && this->sh.getHp() > 0/* && !this->pause*/)
-			this->update();
+		if (this->welcome == true)
+		{
+			this->renderWelcomeScreen();
+		}
 
-		//render function
-		this->render();
+		else
+		{
+			if (this->ship->getHp() > 0 && this->sh.getHp() > 0)
+				this->update();
+
+			//render function
+			this->render();
+		}
 	}
 }
 
@@ -160,6 +168,8 @@ void Game::updatePollEvents()
 			this->window->close();
 		if (ev.Event::KeyPressed && ev.Event::key.code == sf::Keyboard::Escape)
 			this->window->close();
+		if (ev.Event::KeyPressed && ev.Event::key.code == sf::Keyboard::Enter)
+			this->welcome = false;
 	}
 }
 
@@ -235,6 +245,8 @@ void Game::updateEnemies()
 		{
 			//damage the planet/mothership whatever
 			this->sh.loseHP(this->enemyNum.at(counter)->getDamage());
+			//implement the shield damaging enemy and taking damage as well??
+
 			delete this->enemyNum.at(counter);
 			this->enemyNum.erase(this->enemyNum.begin() + counter);
 			--counter;
@@ -400,7 +412,15 @@ void Game::renderBackground()
 
 void Game::renderWelcomeScreen()
 {
+	//clear old frame
+	this->window->clear();
+
+	//loading new things 
+	this->renderBackground();
 	this->window->draw(this->welcomeText);
+	
+	//pushing new frame!
+	this->window->display();
 }
 
 void Game::render()

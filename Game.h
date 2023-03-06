@@ -46,7 +46,10 @@ private:
 
 	//Tutorial/ Welcome
 	bool welcome;
-	sf::Text welcomeText;
+	sf::Sprite welcomeBackground;
+	sf::Texture welcomeBackgroundtexture;
+
+	//Gameover screen
 	sf::Text gameOverText;
 
 	//points system

@@ -19,13 +19,11 @@ void Game::initTextures()
 
 void Game::initWelcomeScreen()
 {
+	//bool to display this once per runtime
 	this->welcome = true;
-	this->welcomeText.setFont(this->font);
-	this->welcomeText.setFillColor(sf::Color::White);
-	this->welcomeText.setCharacterSize(50);
-	this->welcomeText.setString("Welcome to Planet Defender!\nThe objective is to destroy all of the asteroids to protect the planet for 5 minutes\nUse WASD to move and SPACEBAR to shoot\nPress ENTER to start!");
-	this->welcomeText.setPosition(this->window->getSize().x / 2.f - this->welcomeText.getGlobalBounds().width / 2.f,
-		this->window->getSize().y / 2.f - this->welcomeText.getGlobalBounds().height / 2.f);
+	
+	this->welcomeBackgroundtexture.loadFromFile("Textures/welcome.png");
+	this->welcomeBackground.setTexture(this->welcomeBackgroundtexture);
 }
 
 void Game::initHUD()
@@ -274,11 +272,10 @@ void Game::updateCombat()
 			//Bullet and Enemy collision!
 			if (this->bulletNum[k]->getBounds().intersects(this->enemyNum[i]->getBounds()))
 			{
+				//damage dealth per bullet
 				this->enemyNum[i]->loseHP(1);
+				//resetting color of that enemy after it takes damage
 				this->enemyNum[i]->setColor();
-				//reassign color after enemy takes damage!
-				//need a set color func then
-
 
 				if (this->enemyNum[i]->getHp() == 0)
 				{
@@ -290,7 +287,7 @@ void Game::updateCombat()
 					{
 						this->spawnRateCounter = 0;
 						this->spawnRate += 0.05f;
-						std::cout << spawnRate;
+						//std::cout << spawnRate;
 					}
 
 					//deleting enemy
@@ -417,7 +414,7 @@ void Game::renderWelcomeScreen()
 
 	//loading new things 
 	this->renderBackground();
-	this->window->draw(this->welcomeText);
+	this->window->draw(this->welcomeBackground);
 	
 	//pushing new frame!
 	this->window->display();
@@ -428,17 +425,12 @@ void Game::render()
 	//clear the old frame
 	this->window->clear();
 
+	//add elements to render next
 	this->renderBackground();
-
-//	if((!sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) && this->welcome == true)
-//	{
-//		this->renderWelcomeScreen();
-//	}
-	
 	//add objects
 	this->ship->render(*this->window);
 	
-	//for bullet
+	//for bullets
 	for (auto* bullet : this->bulletNum)
 	{
 		bullet->render(this->window);

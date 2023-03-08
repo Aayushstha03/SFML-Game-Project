@@ -1,11 +1,15 @@
 #pragma once
 #include <map>
+#include<string>
+#include<sstream>
+#include<ctime>
+
+//entity files
 #include "Ship.h"
 #include "Bullets.h"
 #include "Enemy.h"
 #include "Shield.h"
-#include<string>
-#include<sstream>
+
 
 class Game 
 {
@@ -64,6 +68,11 @@ private:
 	float spawnTimerMax;
 	std::vector<Enemy*> enemyNum;
 
+	//timer attributes
+	sf::Clock clock;
+	sf::Time timeElapsed;
+
+
 	//private methods
 	void initializeWindow();
 	void initTextures();
@@ -76,6 +85,8 @@ private:
 	void initEnemies();
 	void initHUD();
 	void initSystem();
+
+	void resetGame();
 
 public:
 	Game();

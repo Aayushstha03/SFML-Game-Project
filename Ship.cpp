@@ -65,7 +65,7 @@ void Ship::initVariables()
 	this->hp = this->hpMax;
 	
 	//movement speed
-	this->moveSpeed = 15.f;
+	this->moveSpeed = 20.f;
 	this->attackCoolDownMax = 10.f;
 	this->attackCoolDown = this->attackCoolDownMax;
 }
@@ -95,7 +95,7 @@ void Ship::loseHp(const int value)
 void Ship::updateCooldown()
 {
 	if (this->attackCoolDown < this->attackCoolDownMax)
-		this->attackCoolDown += 1.55f;
+		this->attackCoolDown += 3.5f;
 }
 
 const bool Ship::canAttack()

@@ -21,7 +21,6 @@ void Game::initWelcomeScreen()
 {
 	//bool to display this once per runtime
 	this->welcome = true;
-	
 	this->welcomeBackgroundtexture.loadFromFile("Textures/welcome.png");
 	this->welcomeBackground.setTexture(this->welcomeBackgroundtexture);
 }
@@ -29,21 +28,21 @@ void Game::initWelcomeScreen()
 void Game::initHUD()
 {
 	//load fonts
-	if (!this->font.loadFromFile("Fonts/8-bit Arcade In.ttf"))
+	if (!this->font.loadFromFile("Fonts/retroComputer.ttf"))
 	{
 		std::cout << "Cant load fonts!";
 	}
 
 	//initializing points text
 	this->pointsText.setFont(this->font);
-	this->pointsText.setCharacterSize(50);
+	this->pointsText.setCharacterSize(30);
 	this->pointsText.setFillColor(sf::Color::White);
 
 	//Game over Screen! 
 	this->gameOverText.setFont(this->font);
-	this->gameOverText.setCharacterSize(200);
+	this->gameOverText.setCharacterSize(70);
 	this->gameOverText.setFillColor(sf::Color::White);
-	this->gameOverText.setString("Game Over");
+	this->gameOverText.setString("    Game Over   \n'R' - Restart Game");
 	this->gameOverText.setPosition
 	(this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
 		this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f);
@@ -63,13 +62,12 @@ void Game::initHUD()
 	this->shield.setSize(sf::Vector2f(this->window->getSize().x, 60));
 	this->shield.setFillColor(sf::Color::Magenta);
 	this->shield.setPosition(sf::Vector2f(0.f, this->window->getSize().y - 30.f));
-
 }
 
 void Game::initPlayer()
 {
 	this->ship = new Ship;
-	this->ship->setPosition(this->window->getSize().x / 2 - this->ship->getBounds().width / 2.f, this->window->getSize().y);
+	this->ship->setPosition(this->window->getSize().x / 2 - this->ship->getBounds().width / 2.f, this->window->getSize().y - 50.f);
 }
 
 void Game::initEnemies()
@@ -84,6 +82,23 @@ void Game::initSystem()
 {
 	this->pause = false;
 	this->points = 0;
+}
+
+void Game::resetGame()
+{
+	//ship
+	delete this->ship;
+	this->initPlayer();
+
+	//enemies
+	this->enemyNum.clear();
+	this->spawnRate = 0.6f;
+
+	//bullets
+	this->bulletNum.clear();
+	
+	//score
+	this->points = 0.f;
 }
 
 Game::Game()//constructor
@@ -139,15 +154,15 @@ void Game::run()
 		//basic window controls
 		this->updatePollEvents();
 
-		//update the game only if the player is alive!
+		this->timeElapsed = this->clock.getElapsedTime();
+
 		if (this->welcome == true)
 		{
 			this->renderWelcomeScreen();
 		}
-
 		else
-		{
-			if (this->ship->getHp() > 0 && this->sh.getHp() > 0)
+		{	//update the game only if the player is alive!
+			if (this->ship->getHp() > 0 && this->sh.getHp() > 0/* && this->pause == false*/)
 				this->update();
 
 			//render function
@@ -168,6 +183,8 @@ void Game::updatePollEvents()
 			this->window->close();
 		if (ev.Event::KeyPressed && ev.Event::key.code == sf::Keyboard::Enter)
 			this->welcome = false;
+		if (ev.Event::KeyPressed && ev.key.code == sf::Keyboard::R)
+			this->resetGame();
 	}
 }
 
@@ -197,7 +214,7 @@ void Game::updateInputs()
 		this->ship->setMoveSpeed(3.f);
 	}
 	else
-		this->ship->setMoveSpeed(15.f);
+		this->ship->setMoveSpeed(20.f);
 
 
 }
@@ -310,7 +327,7 @@ void Game::updateHUD()
 {
 	//creating string to print on the window
 	std::stringstream ss;
-	ss <<"Points " << this->points;	
+	ss <<"Points : " << this->points;	
 	this->pointsText.setString(ss.str());
 
 	//updating player HP bar and such
@@ -367,9 +384,9 @@ void Game::updateCollisions()
 	}
 
 	//bottom
-	else if (this->ship->getBounds().top + this->ship->getBounds().height >= this->window->getSize().y - 40.f)
+	else if (this->ship->getBounds().top + this->ship->getBounds().height >= this->window->getSize().y - 50.f)
 	{
-		this->ship->setPosition(this->ship->getBounds().left, this->window->getSize().y - this->ship->getBounds().height - 40.f);
+		this->ship->setPosition(this->ship->getBounds().left, this->window->getSize().y - this->ship->getBounds().height - 50.f);
 	}
 
 }

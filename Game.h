@@ -4,7 +4,6 @@
 #include<sstream>
 #include<ctime>
 #include<fstream>
-#include<cstdlib>
 
 //entity files
 #include "Ship.h"

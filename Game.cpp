@@ -97,7 +97,7 @@ void Game::initSystem()
 	this->newHS = false;
 
 	//reading the previous highscore if any to prevScore var;
-	std::ifstream readScore("data.txt", std::ios::in);
+	std::ifstream readScore("data.dat", std::ios::in);
 	if (!readScore)
 		std::cout << "Can not find the data file to update highscore!\n";
 	readScore >> this->prevScore;
@@ -147,6 +147,8 @@ Game::Game()//constructor
 
 Game::~Game()
 {
+	this->updateHighscore();
+
 	//then close the window and the ship 
 	delete this->window;
 	delete this->ship;
@@ -434,7 +436,7 @@ void Game::updateHighscore()
 		hs << "Current highscore : " << this->prevScore;
 		this->highscoreText.setString(hs.str());
 
-		std::ofstream writeScore("data.txt", std::ios::out);
+		std::ofstream writeScore("data.dat", std::ios::out);
 		if (!writeScore)
 			std::cout << "The data file couldn't be accessed!";
 		writeScore << this->prevScore;

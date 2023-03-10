@@ -1,6 +1,9 @@
 //define once!
 #pragma once
 #include<SFML/Graphics.hpp>
+#include<iostream>
+#include<cstdlib>
+#include<time.h>
 
 class Enemy
 {

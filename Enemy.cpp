@@ -1,11 +1,14 @@
 #include "Enemy.h"
-#include<iostream>
+
 
 void Enemy::initVariables()
 {
+	//random seed using current time
+	srand((unsigned)time(NULL));
+
 	this->pointCount = rand() % 12 + 6; //between 6 and 20(12+6)
-	this->speed = (9 - static_cast<float>(this->pointCount) / 2.f);
-	this->type = 0;
+	this->speed = (10 - static_cast<float>(this->pointCount) / 2.f);
+	//this->type = 0;
 	this->hpMax = (static_cast<int>(this->pointCount) / 4);
 	this->hp = this->hpMax;
 	this->damage = static_cast<int>(this->pointCount);

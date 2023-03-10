@@ -3,12 +3,15 @@
 #include<string>
 #include<sstream>
 #include<ctime>
+#include<fstream>
+#include<cstdlib>
 
 //entity files
 #include "Ship.h"
 #include "Bullets.h"
 #include "Enemy.h"
 #include "Shield.h"
+
 
 
 class Game 
@@ -18,9 +21,6 @@ private:
 	sf::RenderWindow* window;
 	
 	//resources
-	
-	//pause game?
-	bool pause;
 	
 	//using map: which is structure thingy that maps two things
 	std::map<std::string, sf::Texture*> textures;
@@ -36,12 +36,20 @@ private:
 	sf::Sprite worldBackground;
 	sf::Texture worldBackgroundtexture;
 
+	//pause game?
+	bool pause;
+
 	//HUD
 	sf::Font font;
 	sf::Text pointsText;
 
 	sf::RectangleShape playerHpBar;
 	sf::RectangleShape playerHpBarBG;
+
+	//previous highscore storage
+	int prevScore;
+	sf::Text highscoreText;
+	bool newHS;
 
 	//object for shield
 	Shield sh;
@@ -103,6 +111,7 @@ public:
 	void updateBullets();
 	void updateEnemies();
 	void updateCombat();
+	void updateHighscore();
 	void update();
 
 	//welcome screen render!

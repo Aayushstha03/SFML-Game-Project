@@ -23,6 +23,17 @@ void Game::initWelcomeScreen()
 	this->welcome = true;
 	this->welcomeBackgroundtexture.loadFromFile("Textures/welcome.png");
 	this->welcomeBackground.setTexture(this->welcomeBackgroundtexture);
+
+	this->highscoreText.setFont(this->font);
+	this->highscoreText.setFillColor(sf::Color::White);
+	this->highscoreText.setCharacterSize(30);
+	
+	std::stringstream hs;
+	hs << "Current highscore : " << this->prevScore;
+	this->highscoreText.setString(hs.str());
+	this->highscoreText.setPosition(this->window->getSize().x - 575.f,
+		5.f);
+	
 }
 
 void Game::initHUD()
@@ -37,6 +48,7 @@ void Game::initHUD()
 	this->pointsText.setFont(this->font);
 	this->pointsText.setCharacterSize(30);
 	this->pointsText.setFillColor(sf::Color::White);
+	this->pointsText.setPosition(5.f, 5.f);
 
 	//Game over Screen! 
 	this->gameOverText.setFont(this->font);
@@ -82,6 +94,15 @@ void Game::initSystem()
 {
 	this->pause = false;
 	this->points = 0;
+	this->newHS = false;
+
+	//reading the previous highscore if any to prevScore var;
+	std::ifstream readScore("data.txt", std::ios::in);
+	if (!readScore)
+		std::cout << "Can not find the data file to update highscore!\n";
+	readScore >> this->prevScore;
+	readScore.close();
+
 }
 
 void Game::resetGame()
@@ -99,6 +120,11 @@ void Game::resetGame()
 	
 	//score
 	this->points = 0.f;
+
+	this->welcome = true;
+
+	//updating new highscores after resetting the game
+	this->newHS = false;
 }
 
 Game::Game()//constructor
@@ -107,6 +133,8 @@ Game::Game()//constructor
 	this->initializeWindow();
 	//load textures
 	this->initTextures();
+	//points and such
+	this->initSystem();
 	//initializing the welcome screen
 	this->initWelcomeScreen();
 	//load players ship
@@ -115,8 +143,6 @@ Game::Game()//constructor
 	this->initEnemies();
 	//load the HUD
 	this->initHUD();
-	//points and such
-	this->initSystem();
 }
 
 Game::~Game()
@@ -143,7 +169,6 @@ Game::~Game()
 	{
 		delete i;
 	}
-
 }
 
 //Main Game Loop!!!!
@@ -154,7 +179,8 @@ void Game::run()
 		//basic window controls
 		this->updatePollEvents();
 
-		this->timeElapsed = this->clock.getElapsedTime();
+		//time record
+		//this->timeElapsed = this->clock.getElapsedTime();
 
 		if (this->welcome == true)
 		{
@@ -164,6 +190,9 @@ void Game::run()
 		{	//update the game only if the player is alive!
 			if (this->ship->getHp() > 0 && this->sh.getHp() > 0/* && this->pause == false*/)
 				this->update();
+			//updating highscore if its valid!
+			else
+				this->updateHighscore();
 
 			//render function
 			this->render();
@@ -246,6 +275,9 @@ void Game::updateEnemies()
 	this->spawnTimer += this->spawnRate;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
+		//random seed using current time
+		//srand((unsigned)time(0));
+
 		this->enemyNum.push_back(new Enemy(rand() % (this->window->getSize().x - 200), -200.f));
 		this->spawnTimer = 0.f;
 	}
@@ -391,6 +423,26 @@ void Game::updateCollisions()
 
 }
 
+
+void Game::updateHighscore()
+{
+	if (!(this->newHS) && this->points > this->prevScore)
+	{
+		this->newHS = true;
+		this->prevScore = this->points;
+		std::stringstream hs;
+		hs << "Current highscore : " << this->prevScore;
+		this->highscoreText.setString(hs.str());
+
+		std::ofstream writeScore("data.txt", std::ios::out);
+		if (!writeScore)
+			std::cout << "The data file couldn't be accessed!";
+		writeScore << this->prevScore;
+		writeScore.close();
+	}
+}
+
+
 void Game::update()
 {
 	this->updateInputs();
@@ -432,7 +484,8 @@ void Game::renderWelcomeScreen()
 	//loading new things 
 	this->renderBackground();
 	this->window->draw(this->welcomeBackground);
-	
+	this->window->draw(this->highscoreText);
+
 	//pushing new frame!
 	this->window->display();
 }
@@ -466,6 +519,7 @@ void Game::render()
 	if (this->ship->getHp() == 0 || this->sh.getHp() == 0)
 	{
 		this->window->draw(this->gameOverText);
+		this->window->draw(this->highscoreText);
 	}
 
 	//push the new frame

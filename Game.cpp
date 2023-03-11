@@ -17,6 +17,18 @@ void Game::initTextures()
 	this->textures["BULLET"]->loadFromFile("Textures/Bullet.png");
 }
 
+void Game::initAudio()
+{
+	if (!this->shootBuffer.loadFromFile("Audio/firing.wav") || !this->gameAudioBuffer.loadFromFile("Audio/music.wav"))
+		std::cout << "Cannot load the sounds!\n";
+	
+	this->shoot.setBuffer(this->shootBuffer);
+	this->gameAudio.setBuffer(this->gameAudioBuffer);
+
+	this->shoot.setVolume(8);
+	this->gameAudio.setLoop(true);
+}
+
 void Game::initWelcomeScreen()
 {
 	//bool to display this once per runtime
@@ -54,7 +66,7 @@ void Game::initHUD()
 	this->gameOverText.setFont(this->font);
 	this->gameOverText.setCharacterSize(70);
 	this->gameOverText.setFillColor(sf::Color::White);
-	this->gameOverText.setString("    Game Over   \n'R' - Restart Game");
+	this->gameOverText.setString("	    Game Over   \n'R' - Restart Game");
 	this->gameOverText.setPosition
 	(this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
 		this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f);
@@ -107,23 +119,24 @@ void Game::initSystem()
 
 void Game::resetGame()
 {
-	//ship
+	//clearing the old ship
 	delete this->ship;
 	this->initPlayer();
 
-	//enemies
+	//clearing the old enemies
 	this->enemyNum.clear();
 	this->spawnRate = 0.6f;
 
-	//bullets
+	//clearing the old bullets
 	this->bulletNum.clear();
 	
-	//score
+	//resetting the score
 	this->points = 0.f;
-
+	
+	//welcome screen
 	this->welcome = true;
 
-	//updating new highscores after resetting the game
+	//Allow highscore updates after resetting 
 	this->newHS = false;
 }
 
@@ -133,6 +146,8 @@ Game::Game()//constructor
 	this->initializeWindow();
 	//load textures
 	this->initTextures();
+	//load audio
+	this->initAudio();
 	//points and such
 	this->initSystem();
 	//initializing the welcome screen
@@ -143,6 +158,8 @@ Game::Game()//constructor
 	this->initEnemies();
 	//load the HUD
 	this->initHUD();
+
+	//this->gameAudio.play();
 }
 
 Game::~Game()
@@ -176,6 +193,7 @@ Game::~Game()
 //Main Game Loop!!!!
 void Game::run()
 {
+	this->gameAudio.play();
 	while (this->window->isOpen())
 	{
 		//basic window controls
@@ -189,15 +207,12 @@ void Game::run()
 			this->renderWelcomeScreen();
 		}
 		else
-		{	//update the game only if the player is alive!
-			if (this->ship->getHp() > 0 && this->sh.getHp() > 0/* && this->pause == false*/)
+		{	
+			if (this->ship->getHp() > 0 && this->sh.getHp() > 0) //update the game only if the player is alive!
 				this->update();
-			//updating highscore if its valid!
 			else
-				this->updateHighscore();
-
-			//render function
-			this->render();
+				this->updateHighscore(); //updating highscore if its valid!
+			this->render();	//render function
 		}
 	}
 }
@@ -237,6 +252,7 @@ void Game::updateInputs()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&this->ship->canAttack())
 	{
 		this->bulletNum.push_back(new Bullets(this->textures["BULLET"], this->ship->getPos().x + this->ship->getBounds().width / 2.4f, this->ship->getPos().y - 20.f, 0.f, -1.f, 20.f));
+		this->shoot.play();
 	}
 
 	//Movement handicap!
@@ -425,7 +441,6 @@ void Game::updateCollisions()
 
 }
 
-
 void Game::updateHighscore()
 {
 	if (!(this->newHS) && this->points > this->prevScore)
@@ -443,7 +458,6 @@ void Game::updateHighscore()
 		writeScore.close();
 	}
 }
-
 
 void Game::update()
 {

@@ -4,6 +4,7 @@
 #include<sstream>
 #include<ctime>
 #include<fstream>
+#include<SFML/Audio.hpp>
 
 //entity files
 #include "Ship.h"
@@ -11,70 +12,64 @@
 #include "Enemy.h"
 #include "Shield.h"
 
-
-
 class Game 
 {
 private:
-	//window
-	sf::RenderWindow* window;
 	
-	//resources
-	
-	//using map: which is structure thingy that maps two things
-	std::map<std::string, sf::Texture*> textures;
-
-	//main player
-	Ship* ship;
-	float hpPercent;
-
-	//bullet objects
-	std::vector<Bullets*> bulletNum;
-
-	//background stuff
-	sf::Sprite worldBackground;
-	sf::Texture worldBackgroundtexture;
-
-	//pause game?
+	//system attributes
+	sf::RenderWindow* window;						//window
 	bool pause;
+	sf::Font font;									//fonts for UI
+	//resources attributes
+	std::map<std::string, sf::Texture*> textures;	//using map: which is structure thingy that maps two things
 
-	//HUD
-	sf::Font font;
-	sf::Text pointsText;
+	sf::Sprite worldBackground;						//background sprite and texture
+	sf::Texture worldBackgroundtexture;
+	
+	sf::SoundBuffer shootBuffer;
+	sf::Sound shoot;
+	sf::SoundBuffer gameAudioBuffer;
+	sf::Sound gameAudio;
 
-	sf::RectangleShape playerHpBar;
-	sf::RectangleShape playerHpBarBG;
-
-	//previous highscore storage
-	int prevScore;
-	sf::Text highscoreText;
-	bool newHS;
-
-	//object for shield
-	Shield sh;
-	sf::RectangleShape shield;
-	float shieldHpPercent;
-
-	//Tutorial/ Welcome
 	bool welcome;
 	sf::Sprite welcomeBackground;
 	sf::Texture welcomeBackgroundtexture;
 
 	//Gameover screen
 	sf::Text gameOverText;
+	
+	//player realted attributes
+	Ship* ship;										//main player	
+	float hpPercent;								//player hp
+	sf::RectangleShape playerHpBar;
+	sf::RectangleShape playerHpBarBG;
 
-	//points system
-	float points;
-
-	//difficulty scaling
-	float spawnRate;
-	float spawnRateCounter;
+	//Bullets attributes
+	std::vector<Bullets*> bulletNum;				//bullet objects
+	
+	//Shield related attributes
+	Shield sh;										//shield
+	sf::RectangleShape shield;
+	float shieldHpPercent;
 
 	//Enemies
-	float spawnTimer;
-	float spawnTimerMax;
 	std::vector<Enemy*> enemyNum;
+	//difficulty scaling for enemies
+	float spawnTimer;								//Enemy attributes all
+	float spawnTimerMax;
+	float spawnRate;
+	float spawnRateCounter;
+		
+	//Points/score related attributes
+	float points;
+	sf::Text pointsText;							
 
+	//Highscore realted attributes
+	int prevScore;
+	sf::Text highscoreText;
+	bool newHS;
+	
+	
 	//timer attributes
 	sf::Clock clock;
 	sf::Time timeElapsed;
@@ -83,7 +78,7 @@ private:
 	//private methods
 	void initializeWindow();
 	void initTextures();
-	
+	void initAudio();
 	//welcome screen init
 	void initWelcomeScreen();
 
@@ -93,6 +88,7 @@ private:
 	void initHUD();
 	void initSystem();
 
+	//game reset function
 	void resetGame();
 
 public:
@@ -102,6 +98,7 @@ public:
 	//game functions
 	void run();
 
+	//update functions
 	void updatePollEvents();
 	void updateInputs();
 	void updateHUD();
@@ -120,5 +117,4 @@ public:
 	void renderHUD();
 	void renderBackground();
 	void render();
-
 };

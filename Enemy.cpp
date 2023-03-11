@@ -20,7 +20,10 @@ void Enemy::initShape()
 	//this function generates the shape/sprite of the enemy!
 	this->shape.setRadius(this->pointCount*6);
 	this->shape.setPointCount(this->pointCount);
+	//setting origin to centre for rotation
 	
+	this->shape.setOrigin(this->shape.getLocalBounds().width / 2, this->shape.getLocalBounds().height / 2);
+
 	//seperate function to assign color as this is going to be dynamic!
 	//HSL hue saturation and lightness color format!
 	this->shape.setFillColor(sf::Color(255, 38, 59));
@@ -93,6 +96,7 @@ void Enemy::setColor()
 void Enemy::update()
 {
 	this->shape.move(0.f, this->speed);
+	this->shape.rotate(1);
 }
 
 void Enemy::render(sf::RenderTarget* target)

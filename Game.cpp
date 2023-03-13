@@ -304,6 +304,14 @@ void Game::updateEnemies()
 	for (auto* enemy : this->enemyNum)
 	{
 		enemy->update();
+		
+		//removing if it spawns beyond the left corner of the screen
+		if (enemy->getBounds().left < 0.f)
+		{
+			delete this->enemyNum.at(counter);
+			this->enemyNum.erase(this->enemyNum.begin() + counter);
+			--counter;
+		}
 
 		//removing if its at bottom of the screen
 		if (enemy->getBounds().top > window->getSize().y - 60.f)

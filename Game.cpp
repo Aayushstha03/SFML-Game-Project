@@ -293,10 +293,7 @@ void Game::updateEnemies()
 	this->spawnTimer += this->spawnRate;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
-		//random seed using current time
-		//srand((unsigned)time(0));
-
-		this->enemyNum.push_back(new Enemy(rand() % (this->window->getSize().x - 200), -200.f));
+		this->enemyNum.push_back(new Enemy((rand() % (this->window->getSize().x)), -200.f));
 		this->spawnTimer = 0.f;
 	}
 
@@ -305,16 +302,15 @@ void Game::updateEnemies()
 	{
 		enemy->update();
 		
-		//removing if it spawns beyond the left corner of the screen
-		if (enemy->getBounds().left < 0.f)
+		//removing if it spawns to far out 
+		if (enemy->getBounds().left < 0.f || (enemy->getBounds().left + enemy->getBounds().width) > this->window->getSize().x)
 		{
 			delete this->enemyNum.at(counter);
 			this->enemyNum.erase(this->enemyNum.begin() + counter);
 			--counter;
 		}
-
 		//removing if its at bottom of the screen
-		if (enemy->getBounds().top > window->getSize().y - 60.f)
+		else if (enemy->getBounds().top > window->getSize().y - 60.f)
 		{
 			//damage the planet/mothership whatever
 			this->sh.loseHP(this->enemyNum.at(counter)->getDamage());

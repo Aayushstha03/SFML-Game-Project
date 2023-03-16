@@ -7,7 +7,7 @@ void Enemy::initVariables()
 	srand((unsigned)time(NULL));
 
 	this->pointCount = rand() % 12 + 6; //between 6 and 20(12+6)
-	this->speed = (10 - static_cast<float>(this->pointCount) / 2.f);
+	this->speed = (10 - static_cast<float>(this->pointCount) / 2.8f);
 	//this->type = 0;
 	this->hpMax = (static_cast<int>(this->pointCount) / 4);
 	this->hp = this->hpMax;

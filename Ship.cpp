@@ -65,7 +65,7 @@ void Ship::initVariables()
 	this->hp = this->hpMax;
 	
 	//movement speed
-	this->moveSpeed = 20.f;
+	this->moveSpeed = 25.f;
 	this->attackCoolDownMax = 10.f;
 	this->attackCoolDown = this->attackCoolDownMax;
 }

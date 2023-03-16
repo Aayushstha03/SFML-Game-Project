@@ -19,15 +19,28 @@ void Game::initTextures()
 
 void Game::initAudio()
 {
-	if (!this->shootBuffer.loadFromFile("Audio/firing.wav") || !this->gameAudioBuffer.loadFromFile("Audio/music.wav"))
+	if (!this->shootBuffer.loadFromFile("Audio/firing.wav") 
+		|| !this->gameAudioBuffer.loadFromFile("Audio/music.wav") 
+		|| !this->hitBuffer.loadFromFile("Audio/hit.wav")
+		|| !this->gameOverBuffer.loadFromFile("Audio/gameOver.wav")
+		|| !this->shieldHitBuffer.loadFromFile("Audio/shieldHit.wav"))
+		
 		std::cout << "Cannot load the sounds!\n";
 	
+	//binding the sounds and tracks
 	this->shoot.setBuffer(this->shootBuffer);
 	this->gameAudio.setBuffer(this->gameAudioBuffer);
+	this->hit.setBuffer(this->hitBuffer);
+	this->gameOverSound.setBuffer(this->gameOverBuffer);
+	this->shieldHit.setBuffer(this->shieldHitBuffer);
 
-	this->shoot.setVolume(8);
+	//styling the sounds effects
+	this->shoot.setVolume(18);
+	this->hit.setVolume(80);
 	this->gameAudio.setLoop(true);
+	this->gameOverSound.setVolume(110);
 }
+
 
 void Game::initWelcomeScreen()
 {
@@ -138,6 +151,9 @@ void Game::resetGame()
 
 	//Allow highscore updates after resetting 
 	this->newHS = false;
+
+	this->gameAudio.play();
+	this->gameoverSound = false;
 }
 
 Game::Game()//constructor
@@ -193,7 +209,10 @@ Game::~Game()
 //Main Game Loop!!!!
 void Game::run()
 {
+	//paused = 1, playing = 2, stopped = 0
+	//playing music!
 	this->gameAudio.play();
+
 	while (this->window->isOpen())
 	{
 		//basic window controls
@@ -211,7 +230,15 @@ void Game::run()
 			if (this->ship->getHp() > 0 && this->sh.getHp() > 0) //update the game only if the player is alive!
 				this->update();
 			else
+			{
+				this->gameAudio.pause();
+				if (this->gameOverSound.getStatus() != 2 && this->gameoverSound == false)
+				{
+					this->gameoverSound = true;
+					this->gameOverSound.play();
+				}
 				this->updateHighscore(); //updating highscore if its valid!
+			}
 			this->render();	//render function
 		}
 	}
@@ -258,10 +285,10 @@ void Game::updateInputs()
 	//Movement handicap!
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		this->ship->setMoveSpeed(3.f);
+		this->ship->setMoveSpeed(5.f);
 	}
 	else
-		this->ship->setMoveSpeed(20.f);
+		this->ship->setMoveSpeed(25.f);
 
 
 }
@@ -300,6 +327,7 @@ void Game::updateEnemies()
 	unsigned counter = 0;
 	for (auto* enemy : this->enemyNum)
 	{
+		//movement
 		enemy->update();
 		
 		//removing if it spawns to far out 
@@ -312,6 +340,9 @@ void Game::updateEnemies()
 		//removing if its at bottom of the screen
 		else if (enemy->getBounds().top > window->getSize().y - 60.f)
 		{
+			//shield hit sound
+			this->shieldHit.play();
+
 			//damage the planet/mothership whatever
 			this->sh.loseHP(this->enemyNum.at(counter)->getDamage());
 			//implement the shield damaging enemy and taking damage as well??
@@ -323,6 +354,9 @@ void Game::updateEnemies()
 		//removing the enemy and damage dealt if contact!
 		else if (enemy->getBounds().intersects(this->ship->getBounds()))
 		{
+			//player hit sound
+			this->hit.play();
+
 			this->ship->loseHp(this->enemyNum.at(counter)->getDamage());
 			delete this->enemyNum.at(counter);
 			this->enemyNum.erase(this->enemyNum.begin() + counter);

@@ -30,6 +30,13 @@ private:
 	sf::Sound shoot;
 	sf::SoundBuffer gameAudioBuffer;
 	sf::Sound gameAudio;
+	sf::SoundBuffer hitBuffer;
+	sf::Sound hit;
+	bool gameoverSound;
+	sf::SoundBuffer gameOverBuffer;
+	sf::Sound gameOverSound;
+	sf::SoundBuffer shieldHitBuffer;
+	sf::Sound shieldHit;
 
 	bool welcome;
 	sf::Sprite welcomeBackground;

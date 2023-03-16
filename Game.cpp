@@ -41,7 +41,6 @@ void Game::initAudio()
 	this->gameOverSound.setVolume(110);
 }
 
-
 void Game::initWelcomeScreen()
 {
 	//bool to display this once per runtime
@@ -136,16 +135,19 @@ void Game::resetGame()
 	delete this->ship;
 	this->initPlayer();
 
+	//resetting shield HP
+	this->sh.initHP();
+
 	//clearing the old enemies
 	this->enemyNum.clear();
 	this->spawnRate = 0.6f;
 
 	//clearing the old bullets
 	this->bulletNum.clear();
-	
+
 	//resetting the score
 	this->points = 0.f;
-	
+
 	//welcome screen
 	this->welcome = true;
 

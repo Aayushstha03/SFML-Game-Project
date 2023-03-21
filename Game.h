@@ -1,10 +1,10 @@
 #pragma once
 #include <map>
-#include<string>
-#include<sstream>
-#include<ctime>
-#include<fstream>
-#include<SFML/Audio.hpp>
+#include <string>
+#include <sstream>
+#include <ctime>
+#include <fstream>
+#include <SFML/Audio.hpp>
 
 //entity files
 #include "Ship.h"
@@ -26,6 +26,7 @@ private:
 	sf::Sprite worldBackground;						//background sprite and texture
 	sf::Texture worldBackgroundtexture;
 	
+	//Audio components
 	sf::SoundBuffer shootBuffer;
 	sf::Sound shoot;
 	sf::SoundBuffer gameAudioBuffer;
@@ -38,6 +39,7 @@ private:
 	sf::SoundBuffer shieldHitBuffer;
 	sf::Sound shieldHit;
 
+	//Welcome screen info
 	bool welcome;
 	sf::Sprite welcomeBackground;
 	sf::Texture welcomeBackgroundtexture;
@@ -76,11 +78,9 @@ private:
 	sf::Text highscoreText;
 	bool newHS;
 	
-	
 	//timer attributes
-	sf::Clock clock;
-	sf::Time timeElapsed;
-
+	//sf::Clock clock;
+	//sf::Time timeElapsed;
 
 	//private methods
 	void initializeWindow();
@@ -88,8 +88,7 @@ private:
 	void initAudio();
 	//welcome screen init
 	void initWelcomeScreen();
-
-	//elements of the game
+	//Initializing elements of the game
 	void initPlayer();
 	void initEnemies();
 	void initHUD();
@@ -117,11 +116,12 @@ public:
 	void updateHighscore();
 	void update();
 
-	//welcome screen render!
-	void renderWelcomeScreen();
-
 	//game elements render
 	void renderHUD();
 	void renderBackground();
 	void render();
+
+
+	//welcome screen render!
+	void renderWelcomeScreen();
 };

@@ -20,7 +20,7 @@ private:
 	void initShape();
 
 public:
-	Enemy();
+	//Enemy();
 	Enemy(float posX, float posY);
 	virtual ~Enemy();
 

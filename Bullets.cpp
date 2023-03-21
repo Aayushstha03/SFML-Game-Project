@@ -1,7 +1,15 @@
 #include "Bullets.h"
 
+Bullets::Bullets()
+{
+
+}
+
 Bullets::Bullets(sf::Texture* texture, float pos_X, float pos_Y, float dir_X, float dir_Y, float movement_speed)
 {
+	//the bullet must have the following for each generation
+	//underscore for local variabels _
+
 	this->bullet.setTexture(*texture);
 	this->bullet.scale(1.f, 1.f);
 

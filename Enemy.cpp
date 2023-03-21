@@ -31,10 +31,6 @@ void Enemy::initShape()
 	this->shape.setOutlineThickness(5.f);
 }
 
-Enemy::Enemy()
-{
-}
-
 Enemy::Enemy(float posX, float posY)
 {
 	//intializing the enemies variabels

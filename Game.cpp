@@ -95,7 +95,7 @@ void Game::initHUD()
 	this->playerHpBarBG.setFillColor(sf::Color::Red);
 
 	//initializing the "planet surface"
-	this->shield.setSize(sf::Vector2f(this->window->getSize().x, 60));
+	this->shield.setSize(sf::Vector2f(static_cast<float>(this->window->getSize().x), 60.f));
 	this->shield.setFillColor(sf::Color::Magenta);
 	this->shield.setPosition(sf::Vector2f(0.f, this->window->getSize().y - 30.f));
 }
@@ -103,7 +103,7 @@ void Game::initHUD()
 void Game::initPlayer()
 {
 	this->ship = new Ship;
-	this->ship->setPosition(this->window->getSize().x / 2 - this->ship->getBounds().width / 2.f, this->window->getSize().y - 50.f);
+	this->ship->setPosition(this->window->getSize().x / 2.f - this->ship->getBounds().width / 2.f, this->window->getSize().y - 50.f);
 }
 
 void Game::initEnemies()
@@ -280,7 +280,9 @@ void Game::updateInputs()
 	//shooting
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&this->ship->canAttack())
 	{
-		this->bulletNum.push_back(new Bullets(this->textures["BULLET"], this->ship->getPos().x + this->ship->getBounds().width / 2.4f, this->ship->getPos().y - 20.f, 0.f, -1.f, 20.f));
+		this->bulletNum.push_back(new Bullets(this->textures["BULLET"], 
+			this->ship->getPos().x + this->ship->getBounds().width / 2.4f, 
+			this->ship->getPos().y - 20.f, 0.f, -1.f, 20.f));
 		this->shoot.play();
 	}
 
@@ -322,7 +324,7 @@ void Game::updateEnemies()
 	this->spawnTimer += this->spawnRate;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
-		this->enemyNum.push_back(new Enemy((rand() % (this->window->getSize().x)), -200.f));
+		this->enemyNum.push_back(new Enemy(static_cast<float>(rand() % (this->window->getSize().x)), -200.f));
 		this->spawnTimer = 0.f;
 	}
 
@@ -486,7 +488,7 @@ void Game::updateHighscore()
 	if (!(this->newHS) && this->points > this->prevScore)
 	{
 		this->newHS = true;
-		this->prevScore = this->points;
+		this->prevScore = static_cast<int>(this->points);
 		std::stringstream hs;
 		hs << "Current highscore : " << this->prevScore;
 		this->highscoreText.setString(hs.str());

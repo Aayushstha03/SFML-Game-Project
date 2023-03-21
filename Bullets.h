@@ -12,13 +12,8 @@ private:
 	sf::Vector2f direction;
 
 public:
-	//the bullet must have the following for each generation
-	//underscore for local variabels _
-	
 	//def cons
-	Bullets()
-	{
-	};
+	Bullets();
 	
 	Bullets(sf::Texture* texture, float pos_X, float pos_Y, float dir_X, float dir_Y, float movement_speed);
 	

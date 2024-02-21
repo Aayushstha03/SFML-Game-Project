@@ -46,3 +46,8 @@ _Ways the game can end_
 ## Conclusion
 
 I did not use a mainstream game engine like Unity or Godot as I wanted the learn the basic foundations and nuances of game development.
+
+## About the source code
+
+- if you just want to try it out, you can use the most recent release build.
+- If you want to compile and source code and rebuild it, I used Visual Studio so it already has the necessary solution files and its dependencies.
